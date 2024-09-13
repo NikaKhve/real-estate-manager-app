@@ -1,0 +1,9 @@
+@import "@/styles/mixins";
+
+.container {
+  @include default-app-padding;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #dbdbdb;
+  height: 100px;
+}
