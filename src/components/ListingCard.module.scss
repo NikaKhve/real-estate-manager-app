@@ -1,10 +1,15 @@
 .container {
+  cursor: pointer;
   display: grid;
   grid-template-rows: 1fr auto;
   border-radius: 13px;
   border: 1px solid #dbdbdb;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
+
+  > :first-child {
+    position: relative;
+  }
 }
 
 .image {
@@ -40,4 +45,20 @@
       gap: 0.5rem;
     }
   }
+}
+
+.badge {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  background-color: #02152680;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 16px;
+  letter-spacing: 1px;
 }

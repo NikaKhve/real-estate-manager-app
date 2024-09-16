@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Loader } from "@mantine/core";
 
 import useRealEstates from "@/hooks/useRealEstates";
@@ -7,9 +8,13 @@ import ListingCard from "@/components/ListingCard";
 import classes from "./ListingPage.module.scss";
 
 const ListingPage = () => {
+  const navigate = useNavigate();
+
   const { realEstates, loading, error } = useRealEstates();
 
-  console.log("DADSASDA");
+  const handleOnClick = (id) => {
+    navigate(`${id}`);
+  };
 
   useEffect(() => {
     console.log(realEstates, "ESTATES");
@@ -33,6 +38,7 @@ const ListingPage = () => {
         ) : (
           realEstates.map((item) => (
             <ListingCard
+              onClick={() => handleOnClick(item.id)}
               key={item.id}
               price={item.price}
               city={item.city.name}
@@ -41,6 +47,7 @@ const ListingPage = () => {
               zipCode={item.zip_code}
               area={item.area}
               image={item.image}
+              isRental={item.is_rental}
             />
           ))
         )}

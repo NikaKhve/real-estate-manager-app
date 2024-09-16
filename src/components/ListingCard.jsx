@@ -7,6 +7,7 @@ import PostalIcon from "./icons/PostalIcon";
 import classes from "./ListingCard.module.scss";
 
 const ListingCard = ({
+  onClick,
   price,
   address,
   area,
@@ -14,16 +15,21 @@ const ListingCard = ({
   city,
   zipCode,
   image,
+  isRental,
 }) => {
   return (
-    <div className={classes.container}>
+    <div className={classes.container} onClick={() => onClick()}>
       <section>
+        <span className={classes.badge}>
+          <p>{isRental ? "ქირავდება" : "იყიდება"}</p>
+        </span>
         <img className={classes.image} height="307" src={image} />
       </section>
       <section className={classes.description}>
         <p>{price} L</p>
         <p>
-          <PinIcon /> {address}
+          <PinIcon />
+          {city}, {address}
         </p>
         <section>
           <span>
@@ -51,6 +57,8 @@ ListingCard.propTypes = {
   bedrooms: PropTypes.number.isRequired,
   zipCode: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  isRental: PropTypes.number.isRequired,
+  onClick: PropTypes.func.isRequired,
 };
 
 export default ListingCard;
