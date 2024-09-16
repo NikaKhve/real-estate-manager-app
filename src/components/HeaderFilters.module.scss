@@ -1,0 +1,12 @@
+.container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.buttonsWrapper {
+  display: flex;
+  gap: 1.5rem;
+}
