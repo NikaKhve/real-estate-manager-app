@@ -4,7 +4,7 @@
   border-radius: 13px;
   border: 1px solid #dbdbdb;
   overflow: hidden;
-  // background-color: red;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
 .image {
@@ -13,7 +13,9 @@
 
 .description {
   display: flex;
+  color: #021526b2;
   flex-direction: column;
+  gap: 0.8rem;
   padding: 15px 22px 15px 22px;
 
   > :first-child {
@@ -26,5 +28,16 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+  }
+
+  > :nth-child(3) {
+    display: flex;
+    gap: 2rem;
+
+    > span {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
   }
 }

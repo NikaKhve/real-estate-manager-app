@@ -1,9 +1,7 @@
-import React from 'react'
+import size from "@/assets/size.svg";
 
 const SizeIcon = () => {
-  return (
-    <div>SizeIcon</div>
-  )
-}
+  return <img src={size} height="18px" alt="size-icon" />;
+};
 
-export default SizeIcon
+export default SizeIcon;

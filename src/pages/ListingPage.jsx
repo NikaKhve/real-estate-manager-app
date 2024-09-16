@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Loader } from "@mantine/core";
 
 import useRealEstates from "@/hooks/useRealEstates";
 import HeaderFilters from "@/components/HeaderFilters";
@@ -18,10 +19,31 @@ const ListingPage = () => {
     <div className={classes.container}>
       <HeaderFilters />
       <section className={classes.listingWrapper}>
-        <ListingCard />
-        <ListingCard />
-        <ListingCard />
-        <ListingCard />
+        {loading ? (
+          <Loader
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+            color="red"
+            size="xl"
+          />
+        ) : (
+          realEstates.map((item) => (
+            <ListingCard
+              key={item.id}
+              price={item.price}
+              city={item.city.name}
+              address={item.address}
+              bedrooms={item.bedrooms}
+              zipCode={item.zip_code}
+              area={item.area}
+              image={item.image}
+            />
+          ))
+        )}
       </section>
     </div>
   );
