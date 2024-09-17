@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Loader } from "@mantine/core";
+import { Button } from "@mantine/core";
 
+import { formatISODate } from "@/utils/dateFormatter";
 import PinIcon from "@/components/icons/PinIcon";
 import SizeIcon from "@/components/icons/SizeIcon";
 import PostalIcon from "@/components/icons/PostalIcon";
@@ -46,10 +48,12 @@ const ListingItem = () => {
                 height="670px"
                 width="100%"
               />
+              <p className={classes.createDate}>
+                {formatISODate(realEstate.created_at)}
+              </p>
             </div>
             <div>
               <p className={classes.priceText}>{realEstate.price}</p>
-
               <span>
                 <PinIcon /> {realEstate.city.name}, {realEstate.address}
               </span>
@@ -62,11 +66,9 @@ const ListingItem = () => {
               <span>
                 <PostalIcon /> {realEstate.zip_code}
               </span>
-
               <p className={classes.descriptionText}>
                 {realEstate.description}
               </p>
-
               <InfoCard
                 image={realEstate.agent.avatar}
                 name={realEstate.agent.name}
@@ -74,6 +76,17 @@ const ListingItem = () => {
                 email={realEstate.agent.email}
                 phone={realEstate.agent.phone}
               />
+              <div>
+                <Button
+                  classNames={{
+                    root: classes.deleteButton,
+                    label: classes.deleteButtonText,
+                  }}
+                  variant="default"
+                >
+                  ლისტინგის წაშლა
+                </Button>
+              </div>
             </div>
           </section>
           <section className={classes.similarLocations}>

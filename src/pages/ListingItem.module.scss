@@ -13,17 +13,25 @@
 .description {
   display: grid;
   grid-template-columns: 1fr 1fr;
-
   height: 100%;
 
   > :first-child {
     height: 100%;
     width: 100%;
+
+    > p {
+      display: flex;
+      justify-content: end;
+      margin-top: 0.7rem;
+      color: #808a93;
+      font-weight: 400;
+      font-size: 16px;
+    }
   }
 
   > :nth-child(2) {
     display: flex;
-    width: 65%;
+    // width: 65%;
     flex-direction: column;
     gap: 0.3rem;
     margin-top: 2rem;
@@ -49,8 +57,23 @@
       color: #808a93;
       size: 16px;
       font-weight: 400;
-      margin-top: 1rem;
-      margin-bottom: 2rem;
+      margin-top: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    > :last-child {
+      margin-top: 2rem;
+    }
+
+    .deleteButton {
+      border: 1px solid #676e76;
+      border-radius: 8px;
+    }
+
+    .deleteButtonText {
+      color: #676e76;
+      font-size: 12px;
+      font-weight: 500;
     }
   }
 }
