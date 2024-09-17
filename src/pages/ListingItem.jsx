@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Loader } from "@mantine/core";
-import { Button } from "@mantine/core";
+import { useParams, useNavigate } from "react-router-dom";
+import { Loader, Button } from "@mantine/core";
+import { Carousel } from "@mantine/carousel";
 
 import { formatISODate } from "@/utils/dateFormatter";
 import PinIcon from "@/components/icons/PinIcon";
@@ -11,17 +11,18 @@ import BedIcon from "@/components/icons/BedIcon";
 import useRealEstate from "@/hooks/useRealEstate";
 import ArrowIcon from "@/components/icons/ArrowIcon";
 import InfoCard from "@/components/ui/InfoCard";
+import ListingCard from "@/components/ListingCard";
 import classes from "./ListingItem.module.scss";
 
 const ListingItem = () => {
-  let { id } = useParams();
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const { realEstate, loading, error } = useRealEstate(id);
 
-  console.log(realEstate, "REA");
-  // useEffect(() => {
-  //   console.log(realEstate);
-  // }, [realEstate]);
+  const handleOnGoBack = () => {
+    navigate("/listing");
+  };
 
   return (
     <>
@@ -38,7 +39,7 @@ const ListingItem = () => {
         />
       ) : (
         <div className={classes.container}>
-          <ArrowIcon />
+          <ArrowIcon onClick={() => handleOnGoBack()} />
           <section className={classes.description}>
             <div>
               <img
@@ -90,9 +91,38 @@ const ListingItem = () => {
             </div>
           </section>
           <section className={classes.similarLocations}>
-            ბინები მსგავს ლოკაციაზე
+            <p>ბინები მსგავს ლოკაციაზე</p>
           </section>
-          <section className={classes.carouselWrapper}>3</section>
+          <section className={classes.carouselWrapper}>
+            <Carousel
+              withIndicators
+              height={470}
+              slideSize="25%"
+              slideGap="md"
+              loop
+              align="start"
+              slidesToScroll={3}
+            >
+              <Carousel.Slide>
+                <ListingCard />
+              </Carousel.Slide>
+              <Carousel.Slide>
+                <ListingCard />
+              </Carousel.Slide>
+              <Carousel.Slide>
+                <ListingCard />
+              </Carousel.Slide>
+              <Carousel.Slide>
+                <ListingCard />
+              </Carousel.Slide>
+              <Carousel.Slide>
+                <ListingCard />
+              </Carousel.Slide>
+              <Carousel.Slide>
+                <ListingCard />
+              </Carousel.Slide>
+            </Carousel>
+          </section>
         </div>
       )}
     </>

@@ -83,7 +83,9 @@
 }
 
 .similarLocations {
-  color: #021526;
-  font-size: 32px;
-  font-weight: 500;
+  > :first-child {
+    color: #021526;
+    font-size: 30px;
+    font-weight: 600;
+  }
 }
