@@ -1,0 +1,43 @@
+.container {
+  width: 100%;
+  border: 1px solid #dbdbdb;
+  border-radius: 8px;
+  padding: 1.5rem 1rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  > :first-child {
+    border-radius: 50%;
+  }
+}
+
+.info {
+  display: flex;
+  margin-top: 1.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  p {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    color: #808a93;
+    font-size: 14px;
+  }
+}
+
+.fullNameText {
+  color: #021526;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.roleText {
+  color: #676e76;
+  font-size: 14px;
+  font-weight: 400;
+}

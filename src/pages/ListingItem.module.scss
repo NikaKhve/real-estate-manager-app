@@ -3,12 +3,64 @@
 .container {
   @include default-app-padding;
   display: grid;
+  grid-template-rows: auto 1fr auto 1fr;
+  height: 100%;
+  width: 100%;
   gap: 2rem;
-  margin-top: 4rem;
+  margin-top: 2rem;
 }
 
 .description {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+
+  height: 100%;
+
+  > :first-child {
+    height: 100%;
+    width: 100%;
+  }
+
+  > :nth-child(2) {
+    display: flex;
+    width: 65%;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 2rem;
+    margin-left: 5rem;
+
+    .priceText {
+      color: #021526;
+      font-size: 48px;
+      font-weight: 700;
+    }
+
+    span {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 0.5rem;
+      color: #808a93;
+      font-size: 24px;
+      font-weight: 400;
+    }
+
+    .descriptionText {
+      color: #808a93;
+      size: 16px;
+      font-weight: 400;
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+  }
+}
+
+.image {
+  border-radius: 12px;
+}
+
+.similarLocations {
+  color: #021526;
+  font-size: 32px;
+  font-weight: 500;
 }
