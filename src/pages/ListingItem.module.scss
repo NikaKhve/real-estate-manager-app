@@ -2,4 +2,13 @@
 
 .container {
   @include default-app-padding;
+  display: grid;
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.description {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
 }
