@@ -7,6 +7,7 @@ import {
   NativeSelect,
   Textarea,
   Button,
+  Image,
 } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
@@ -20,6 +21,21 @@ import classes from "./AddNewListing.module.scss";
 const AddNewListing = () => {
   const openRef = useRef();
   const [file, setFile] = useState(null);
+
+  const preview = () => {
+    if (!file) return null;
+
+    const imageUrl = URL.createObjectURL(file);
+    return (
+      <Image
+        className={classes.uploadedImage}
+        key={imageUrl}
+        src={imageUrl}
+        alt="Preview"
+        onLoad={() => URL.revokeObjectURL(imageUrl)}
+      />
+    );
+  };
 
   const { regions } = useGetAllRegions();
   const { cities } = useGetAllCities();
@@ -153,15 +169,18 @@ const AddNewListing = () => {
             mt="xs"
             openRef={openRef}
             onDrop={(files) => {
-              const file = files[0];
-              setFile(file); // Store file in state
-              form.setFieldValue("image", file); // Set file in form state
+              const selectedFile = files[0];
+              setFile(selectedFile);
+              form.setFieldValue("image", selectedFile);
             }}
             accept={IMAGE_MIME_TYPE}
             className={classes.root}
           >
             <PlusIcon />
           </Dropzone>
+          <div className={classes.uploadedImageWrapper}>
+            {file && preview()}
+          </div>
         </div>
         <Button type="submit">submit</Button>
       </form>
