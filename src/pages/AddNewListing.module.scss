@@ -36,3 +36,27 @@
     margin-right: 4rem;
   }
 }
+
+.locationInputsWrapper {
+  > :first-child {
+    color: #1a1a1f;
+    font-size: 16px;
+    font-weight: 600;
+  }
+
+  > :last-child {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+}
+
+// .textInputLabel {
+//   // color: red;
+//   font-size: 14px;
+//   font-weight: 600;
+// }
+
+// .required {
+//   color: black;
+// }
