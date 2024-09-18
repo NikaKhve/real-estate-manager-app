@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Radio,
   Group,
@@ -6,17 +6,21 @@ import {
   NumberInput,
   NativeSelect,
   Textarea,
+  Button,
 } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
-import { Dropzone } from "@mantine/dropzone";
-
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import { useAddNewListingSchema } from "@/schemas/useAddNewListingSchema";
+import PlusIcon from "@/components/icons/PlusIcon";
 import useGetAllRegions from "@/hooks/useGetAllRegions";
 import useGetAllCities from "@/hooks/useGetAllCities";
-import { useAddNewListingSchema } from "@/schemas/useAddNewListingSchema";
 import classes from "./AddNewListing.module.scss";
 
 const AddNewListing = () => {
+  const openRef = useRef();
+  const [file, setFile] = useState(null);
+
   const { regions } = useGetAllRegions();
   const { cities } = useGetAllCities();
 
@@ -42,17 +46,14 @@ const AddNewListing = () => {
       area: null,
       bedrooms: null,
       description: "",
+      image: null, // Set initial value to null
     },
   });
 
   const handleSubmit = (values) => {
-    form.validate();
+    // form.validate();
     console.log("Form Submitted", values);
   };
-
-  // useEffect(() => {
-  //   console.log(form.values, "FORM");
-  // }, [form]);
 
   return (
     <div className={classes.container}>
@@ -94,28 +95,24 @@ const AddNewListing = () => {
             <TextInput
               classNames={{ required: classes.required }}
               mt="sm"
-              label="მისამართი"
+              label="მისამართი*"
               key={form.key("address")}
               {...form.getInputProps("address")}
-              withAsterisk
             />
             <NumberInput
-              label="საფოსტო ინდექსი"
+              label="საფოსტო ინდექსი*"
               mt="sm"
               key={form.key("zip_code")}
               {...form.getInputProps("zip_code")}
-              withAsterisk
             />
             <NativeSelect
-              label="რეგიონი"
+              label="რეგიონი*"
               data={regionOptions}
               {...form.getInputProps("region_id")}
-              withAsterisk
             />
             <NativeSelect
-              label="ქალაქი"
+              label="ქალაქი*"
               data={citiesOptions}
-              withAsterisk
               {...form.getInputProps("city_id")}
             />
           </section>
@@ -124,42 +121,49 @@ const AddNewListing = () => {
           <p className={classes.inputGroupDescription}>ბინის დეტალები</p>
           <section className={classes.inputGroupWrapper}>
             <NumberInput
-              label="ფასი"
+              label="ფასი*"
               mt="sm"
               key={form.key("price")}
               {...form.getInputProps("price")}
-              withAsterisk
             />
             <NumberInput
-              label="ფართობი"
+              label="ფართობი*"
               mt="sm"
               key={form.key("area")}
               {...form.getInputProps("area")}
-              withAsterisk
             />
             <NumberInput
-              label="საძინებლების რაოდენობა"
+              label="საძინებლების რაოდენობა*"
               mt="sm"
               key={form.key("bedrooms")}
               {...form.getInputProps("bedrooms")}
-              withAsterisk
             />
           </section>
           <Textarea
             classNames={{ input: classes.textareaInput }}
             mt="lg"
-            label="აღწერა"
-            withAsterisk
+            label="აღწერა*"
             {...form.getInputProps("description")}
             key={form.key("description")}
           />
-          <Dropzone openRef={openRef} onDrop={() => {}}>
-            {/* children */}
+          <p className={`${classes.uploadPhotoText} ${classes.fileInputText}`}>
+            ატვირთეთ ფოტო *
+          </p>
+          <Dropzone
+            mt="xs"
+            openRef={openRef}
+            onDrop={(files) => {
+              const file = files[0];
+              setFile(file); // Store file in state
+              form.setFieldValue("image", file); // Set file in form state
+            }}
+            accept={IMAGE_MIME_TYPE}
+            className={classes.root}
+          >
+            <PlusIcon />
           </Dropzone>
         </div>
-        <div>4</div>
-        <div>5</div>
-        <button>submit</button>
+        <Button type="submit">submit</Button>
       </form>
     </div>
   );

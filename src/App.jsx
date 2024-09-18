@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import "./App.css";
 import "@mantine/core/styles.css";
 import "@mantine/carousel/styles.css";
+import "@mantine/dropzone/styles.css";
 
 function App() {
   return (

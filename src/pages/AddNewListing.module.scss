@@ -50,9 +50,27 @@
 }
 
 .detailsInputsWrapper {
+  .root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    border: 1.9px dashed #2d3648;
+    border-radius: 8px;
+  }
+
   .textareaInput {
     height: 170px;
   }
+}
+
+.fileInputText {
+  margin-top: 2rem;
+}
+
+.uploadPhotoText {
+  font-size: 14px;
+  font-weight: 600;
 }
 
 // .textInputLabel {
