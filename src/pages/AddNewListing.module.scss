@@ -37,17 +37,21 @@
   }
 }
 
-.locationInputsWrapper {
-  > :first-child {
-    color: #1a1a1f;
-    font-size: 16px;
-    font-weight: 600;
-  }
+.inputGroupDescription {
+  color: #1a1a1f;
+  font-size: 16px;
+  font-weight: 600;
+}
 
-  > :last-child {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+.inputGroupWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.detailsInputsWrapper {
+  .textareaInput {
+    height: 170px;
   }
 }
 

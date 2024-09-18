@@ -1,18 +1,47 @@
 import { useEffect } from "react";
-import { Radio, Group, TextInput, NumberInput } from "@mantine/core";
+import {
+  Radio,
+  Group,
+  TextInput,
+  NumberInput,
+  NativeSelect,
+  Textarea,
+} from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
+import { Dropzone } from "@mantine/dropzone";
 
+import useGetAllRegions from "@/hooks/useGetAllRegions";
+import useGetAllCities from "@/hooks/useGetAllCities";
 import { useAddNewListingSchema } from "@/schemas/useAddNewListingSchema";
 import classes from "./AddNewListing.module.scss";
 
 const AddNewListing = () => {
+  const { regions } = useGetAllRegions();
+  const { cities } = useGetAllCities();
+
+  const regionOptions = regions?.map((region) => ({
+    value: region.id,
+    label: region.name,
+  }));
+
+  const citiesOptions = cities?.map((city) => ({
+    value: city.id,
+    label: city.name,
+  }));
+
   const form = useForm({
     validate: zodResolver(useAddNewListingSchema),
     initialValues: {
       is_rental: "0",
       address: "",
       zip_code: null,
+      region_id: "1",
+      city_id: "1",
+      price: null,
+      area: null,
+      bedrooms: null,
+      description: "",
     },
   });
 
@@ -60,8 +89,8 @@ const AddNewListing = () => {
           </Radio.Group>
         </div>
         <div className={classes.locationInputsWrapper}>
-          <p>მდებარეობა</p>
-          <section>
+          <p className={classes.inputGroupDescription}>მდებარეობა</p>
+          <section className={classes.inputGroupWrapper}>
             <TextInput
               classNames={{ required: classes.required }}
               mt="sm"
@@ -77,28 +106,57 @@ const AddNewListing = () => {
               {...form.getInputProps("zip_code")}
               withAsterisk
             />
-            {/* <TextInput
-              label="Email"
-              placeholder="Email"
-              {...form.getInputProps("email")}
+            <NativeSelect
+              label="რეგიონი"
+              data={regionOptions}
+              {...form.getInputProps("region_id")}
+              withAsterisk
             />
-            <TextInput
-              mt="sm"
-              label="Email"
-              placeholder="Email"
-              key={form.key("email")}
-              {...form.getInputProps("email")}
+            <NativeSelect
+              label="ქალაქი"
+              data={citiesOptions}
+              withAsterisk
+              {...form.getInputProps("city_id")}
             />
-            <TextInput
-              mt="sm"
-              label="Email"
-              placeholder="Email"
-              key={form.key("email")}
-              {...form.getInputProps("email")}
-            /> */}
           </section>
         </div>
-        <div>3</div>
+        <div className={classes.detailsInputsWrapper}>
+          <p className={classes.inputGroupDescription}>ბინის დეტალები</p>
+          <section className={classes.inputGroupWrapper}>
+            <NumberInput
+              label="ფასი"
+              mt="sm"
+              key={form.key("price")}
+              {...form.getInputProps("price")}
+              withAsterisk
+            />
+            <NumberInput
+              label="ფართობი"
+              mt="sm"
+              key={form.key("area")}
+              {...form.getInputProps("area")}
+              withAsterisk
+            />
+            <NumberInput
+              label="საძინებლების რაოდენობა"
+              mt="sm"
+              key={form.key("bedrooms")}
+              {...form.getInputProps("bedrooms")}
+              withAsterisk
+            />
+          </section>
+          <Textarea
+            classNames={{ input: classes.textareaInput }}
+            mt="lg"
+            label="აღწერა"
+            withAsterisk
+            {...form.getInputProps("description")}
+            key={form.key("description")}
+          />
+          <Dropzone openRef={openRef} onDrop={() => {}}>
+            {/* children */}
+          </Dropzone>
+        </div>
         <div>4</div>
         <div>5</div>
         <button>submit</button>

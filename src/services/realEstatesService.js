@@ -9,3 +9,13 @@ export const getRealEstate = async (id) => {
   const { data } = await axiosInstance.get(`/real-estates/${id}`);
   return data;
 };
+
+export const getAllRegions = async () => {
+  const { data } = await axiosInstance.get("/regions");
+  return data;
+};
+
+export const getAllCities = async () => {
+  const { data } = await axiosInstance.get("/cities");
+  return data;
+};
