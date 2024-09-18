@@ -54,3 +54,8 @@ export const createNewListing = async (payload) => {
     throw error;
   }
 };
+
+export const deleteListing = async (id) => {
+  const { data } = await axiosInstance.delete(`real-estates/${id}`);
+  return data;
+};

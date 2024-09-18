@@ -31,7 +31,6 @@
 
   > :nth-child(2) {
     display: flex;
-    // width: 65%;
     flex-direction: column;
     gap: 0.3rem;
     margin-top: 2rem;
@@ -88,4 +87,23 @@
     font-size: 30px;
     font-weight: 600;
   }
+}
+
+.modalInnerContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  > :first-child {
+    color: #2d3648;
+    font-size: 20px;
+    font-weight: 500;
+  }
+}
+
+.buttonsWrapper {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
 }

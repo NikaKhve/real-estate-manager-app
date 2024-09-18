@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader, Button } from "@mantine/core";
+import { Loader, Button, Modal } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
+import { useDisclosure } from "@mantine/hooks";
 
 import { formatISODate } from "@/utils/dateFormatter";
+import { deleteListing } from "@/services/realEstatesService";
 import PinIcon from "@/components/icons/PinIcon";
+import BaseButton from "@/components/ui/BaseButton";
 import SizeIcon from "@/components/icons/SizeIcon";
 import PostalIcon from "@/components/icons/PostalIcon";
 import BedIcon from "@/components/icons/BedIcon";
@@ -15,10 +17,17 @@ import ListingCard from "@/components/ListingCard";
 import classes from "./ListingItem.module.scss";
 
 const ListingItem = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   const { id } = useParams();
   const navigate = useNavigate();
 
   const { realEstate, loading, error } = useRealEstate(id);
+
+  const handleOnConfirmDelete = async () => {
+    await deleteListing(id);
+    navigate("/listing");
+  };
 
   const handleOnGoBack = () => {
     navigate("/listing");
@@ -26,6 +35,37 @@ const ListingItem = () => {
 
   return (
     <>
+      <Modal
+        opened={opened}
+        onClose={close}
+        radius="lg"
+        size="lg"
+        centered
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <div className={classes.modalInnerContainer}>
+          <p>გსურთ წაშალოთ ლისტინგი?</p>
+          <div className={classes.buttonsWrapper}>
+            <BaseButton
+              onClick={close}
+              showIcon={false}
+              label="გაუქმება"
+              backgroundColor="#ffff"
+              textColor="#F93B1D"
+            />
+            <BaseButton
+              onClick={() => handleOnConfirmDelete()}
+              showIcon={false}
+              label="დადასტურება"
+              backgroundColor="#F93B1D"
+              textColor="#ffff"
+            />
+          </div>
+        </div>
+      </Modal>
       {loading ? (
         <Loader
           style={{
@@ -79,6 +119,7 @@ const ListingItem = () => {
               />
               <div>
                 <Button
+                  onClick={open}
                   classNames={{
                     root: classes.deleteButton,
                     label: classes.deleteButtonText,
