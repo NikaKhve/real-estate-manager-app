@@ -2,7 +2,13 @@ import PropTypes from "prop-types";
 
 import classes from "./BaseButton.module.scss";
 
-const BaseButton = ({ label, textColor, backgroundColor, onClick }) => {
+const BaseButton = ({
+  label,
+  textColor,
+  backgroundColor,
+  onClick,
+  showIcon = true,
+}) => {
   return (
     <div
       onClick={() => onClick()}
@@ -10,7 +16,7 @@ const BaseButton = ({ label, textColor, backgroundColor, onClick }) => {
       className={classes.container}
     >
       <p style={{ color: textColor }} className={classes.buttonText}>
-        <span>+</span> {label}
+        {showIcon && <span>+</span>} {label}
       </p>
     </div>
   );
@@ -20,6 +26,7 @@ BaseButton.propTypes = {
   label: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   textColor: PropTypes.string.isRequired,
+  showIcon: PropTypes.bool,
   backgroundColor: PropTypes.string.isRequired,
 };
 

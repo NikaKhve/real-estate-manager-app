@@ -12,8 +12,11 @@ import {
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+
 import { useAddNewListingSchema } from "@/schemas/useAddNewListingSchema";
+import BaseButton from "@/components/ui/BaseButton";
 import PlusIcon from "@/components/icons/PlusIcon";
+import useGetAllAgents from "@/hooks/useGetAllAgents";
 import useGetAllRegions from "@/hooks/useGetAllRegions";
 import useGetAllCities from "@/hooks/useGetAllCities";
 import classes from "./AddNewListing.module.scss";
@@ -28,7 +31,6 @@ const AddNewListing = () => {
     const imageUrl = URL.createObjectURL(file);
     return (
       <Image
-        className={classes.uploadedImage}
         key={imageUrl}
         src={imageUrl}
         alt="Preview"
@@ -39,6 +41,7 @@ const AddNewListing = () => {
 
   const { regions } = useGetAllRegions();
   const { cities } = useGetAllCities();
+  const { agents } = useGetAllAgents();
 
   const regionOptions = regions?.map((region) => ({
     value: region.id,
@@ -50,27 +53,41 @@ const AddNewListing = () => {
     label: city.name,
   }));
 
+  const agentsOptions = agents?.map((agent) => ({
+    value: agent.id,
+    label: agent.name + " " + agent.surname,
+  }));
+
   const form = useForm({
     validate: zodResolver(useAddNewListingSchema),
     initialValues: {
       is_rental: "0",
       address: "",
       zip_code: null,
-      region_id: "1",
-      city_id: "1",
+      region_id: "",
+      city_id: "",
       price: null,
       area: null,
       bedrooms: null,
       description: "",
-      image: null, // Set initial value to null
+      image: null,
+      agent_id: "",
     },
   });
 
-  const handleSubmit = (values) => {
-    // form.validate();
+  const handleSubmit = async (values) => {
+    // Trigger validation manually
+    const validationResult = form.validate();
+
+    // Check if there are validation errors
+    if (validationResult.hasErrors) {
+      console.log("Validation Errors:", form.errors);
+      return;
+    }
+
+    // If there are no errors, proceed with form submission
     console.log("Form Submitted", values);
   };
-
   return (
     <div className={classes.container}>
       <p className={classes.heading}>ლისტინგის დამატება</p>
@@ -178,11 +195,40 @@ const AddNewListing = () => {
           >
             <PlusIcon />
           </Dropzone>
+          {form.errors.image && (
+            <p className={classes.errorMessage}>{form.errors.image}</p>
+          )}
           <div className={classes.uploadedImageWrapper}>
             {file && preview()}
           </div>
         </div>
-        <Button type="submit">submit</Button>
+        <div>
+          <p className={classes.inputGroupDescription}>აგენტი</p>
+          <section className={classes.inputGroupWrapper}>
+            <NativeSelect
+              label="აირჩიე"
+              mt="xs"
+              data={agentsOptions}
+              {...form.getInputProps("agent_id")}
+              key={form.key("agent_id")}
+            />
+          </section>
+        </div>
+        <div className={classes.buttonsWrapper}>
+          <BaseButton
+            label="გაუქმება"
+            backgroundColor=""
+            textColor="#F93B1D"
+            showIcon={false}
+          />
+          <BaseButton
+            label="დაამატე ლისტინგი"
+            backgroundColor="#F93B1D"
+            showIcon={false}
+            textColor="#FFFFFF"
+          />
+        </div>
+        {/* <Button type="submit">submit</Button> */}
       </form>
     </div>
   );

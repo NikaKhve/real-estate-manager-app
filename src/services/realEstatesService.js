@@ -19,3 +19,8 @@ export const getAllCities = async () => {
   const { data } = await axiosInstance.get("/cities");
   return data;
 };
+
+export const getAllAgents = async () => {
+  const { data } = await axiosInstance.get("/agents");
+  return data;
+};
