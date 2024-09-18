@@ -24,3 +24,33 @@ export const getAllAgents = async () => {
   const { data } = await axiosInstance.get("/agents");
   return data;
 };
+
+export const createNewListing = async (payload) => {
+  const formData = new FormData();
+  console.log(payload, "PAYLOAD");
+  Object.keys(payload).forEach((key) => {
+    let value = payload[key];
+
+    if (key === "region_id" || key === "city_id" || key === "agent_id") {
+      value = value ? parseInt(value, 10) : "";
+    }
+
+    if (key === "image" && value instanceof File) {
+      formData.append(key, value);
+    } else if (value !== null && value !== "") {
+      formData.append(key, value);
+    }
+  });
+
+  try {
+    const { data } = await axiosInstance.post("/real-estates", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error("Error creating new listing:", error.response?.data || error);
+    throw error;
+  }
+};

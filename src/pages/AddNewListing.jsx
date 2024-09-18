@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Radio,
   Group,
   TextInput,
   NumberInput,
-  NativeSelect,
+  Select,
   Textarea,
-  Button,
   Image,
 } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
@@ -18,10 +18,12 @@ import BaseButton from "@/components/ui/BaseButton";
 import PlusIcon from "@/components/icons/PlusIcon";
 import useGetAllAgents from "@/hooks/useGetAllAgents";
 import useGetAllRegions from "@/hooks/useGetAllRegions";
+import { createNewListing } from "@/services/realEstatesService";
 import useGetAllCities from "@/hooks/useGetAllCities";
 import classes from "./AddNewListing.module.scss";
 
 const AddNewListing = () => {
+  const navigate = useNavigate();
   const openRef = useRef();
   const [file, setFile] = useState(null);
 
@@ -44,17 +46,17 @@ const AddNewListing = () => {
   const { agents } = useGetAllAgents();
 
   const regionOptions = regions?.map((region) => ({
-    value: region.id,
+    value: String(region.id),
     label: region.name,
   }));
 
   const citiesOptions = cities?.map((city) => ({
-    value: city.id,
+    value: String(city.id),
     label: city.name,
   }));
 
   const agentsOptions = agents?.map((agent) => ({
-    value: agent.id,
+    value: String(agent.id),
     label: agent.name + " " + agent.surname,
   }));
 
@@ -76,18 +78,15 @@ const AddNewListing = () => {
   });
 
   const handleSubmit = async (values) => {
-    // Trigger validation manually
-    const validationResult = form.validate();
-
-    // Check if there are validation errors
-    if (validationResult.hasErrors) {
-      console.log("Validation Errors:", form.errors);
-      return;
-    }
-
-    // If there are no errors, proceed with form submission
-    console.log("Form Submitted", values);
+    form.validate();
+    await createNewListing(values);
+    navigate("/listing");
   };
+
+  useEffect(() => {
+    console.log(form.values);
+  }, [form]);
+
   return (
     <div className={classes.container}>
       <p className={classes.heading}>ლისტინგის დამატება</p>
@@ -138,12 +137,12 @@ const AddNewListing = () => {
               key={form.key("zip_code")}
               {...form.getInputProps("zip_code")}
             />
-            <NativeSelect
+            <Select
               label="რეგიონი*"
               data={regionOptions}
               {...form.getInputProps("region_id")}
             />
-            <NativeSelect
+            <Select
               label="ქალაქი*"
               data={citiesOptions}
               {...form.getInputProps("city_id")}
@@ -205,7 +204,7 @@ const AddNewListing = () => {
         <div>
           <p className={classes.inputGroupDescription}>აგენტი</p>
           <section className={classes.inputGroupWrapper}>
-            <NativeSelect
+            <Select
               label="აირჩიე"
               mt="xs"
               data={agentsOptions}
@@ -216,19 +215,21 @@ const AddNewListing = () => {
         </div>
         <div className={classes.buttonsWrapper}>
           <BaseButton
+            onClick={() => navigate("/listing")}
+            type="button"
+            backgroundColor="#fffff"
             label="გაუქმება"
-            backgroundColor=""
             textColor="#F93B1D"
             showIcon={false}
           />
           <BaseButton
+            type="submit"
             label="დაამატე ლისტინგი"
             backgroundColor="#F93B1D"
             showIcon={false}
             textColor="#FFFFFF"
           />
         </div>
-        {/* <Button type="submit">submit</Button> */}
       </form>
     </div>
   );

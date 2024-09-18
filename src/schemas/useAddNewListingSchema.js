@@ -14,9 +14,9 @@ export const useAddNewListingSchema = z.object({
       invalid_type_error: "საფოსტო ინდექსი არის აუცილებელი ველი",
     })
     .min(1, "საფოსტო ინდექსი არის აუცილებელი ველი"),
-  region_id: z.string(),
-  city_id: z.string(),
-  agent_id: z.string(),
+  region_id: z.string().min(1, "რეგიონი არის აუცილებელი ველი"),
+  city_id: z.string().min(1, "ქალაქი არის აუცილებელი ველი"),
+  agent_id: z.string().min(1, "აგენტი არის აუცილებელი ველი"),
   price: z.number({
     required_error: "ფასი არის აუცილებელი ველი",
     invalid_type_error: "ფასი არის აუცილებელი ველი",
