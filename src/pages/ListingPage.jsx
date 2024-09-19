@@ -36,12 +36,12 @@ const ListingPage = () => {
 
   const handleOnSubmitAddNewAgent = async (values) => {
     await createNewAgent(values);
-    localStorage.removeItem("addNewAgentData");
     resetForm();
     close();
   };
 
   const resetForm = () => {
+    localStorage.removeItem("addNewAgentData");
     form.values.name = "";
     form.values.surname = "";
     form.values.email = "";
