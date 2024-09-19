@@ -53,8 +53,8 @@ const DeleteModal = ({ opened, onClose, onConfirm }) => (
 );
 
 const ListingItem = () => {
-  const [opened, { open, close }] = useDisclosure(false);
   const [similarRegionRealEstates, setSimilarRegionRealEstates] = useState([]);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -70,7 +70,9 @@ const ListingItem = () => {
   useEffect(() => {
     if (realEstates.length > 0 && realEstate) {
       const filteredListings = realEstates.filter(
-        (item) => item.city?.region_id === realEstate?.city?.region_id
+        (item) =>
+          item.city?.region_id === realEstate?.city?.region_id &&
+          item.id !== realEstate.id
       );
       setSimilarRegionRealEstates(filteredListings);
     }
@@ -113,7 +115,7 @@ const ListingItem = () => {
           </p>
         </div>
         <div>
-          <p className={classes.priceText}>{realEstate.price}</p>
+          <p className={classes.priceText}>{realEstate.price} ₾</p>
           <span>
             <PinIcon /> {realEstate.city.name}, {realEstate.address}
           </span>
@@ -147,8 +149,8 @@ const ListingItem = () => {
         </div>
       </section>
 
+      <p className={classes.similarLocationsText}>ბინები მსგავს ლოკაციაზე</p>
       <section className={classes.similarLocations}>
-        <p>ბინები მსგავს ლოკაციაზე</p>
         {realEstatesLoading ? (
           <Loader />
         ) : similarRegionRealEstates.length > 0 ? (
@@ -167,11 +169,15 @@ const ListingItem = () => {
                   price={item.price}
                   address={item.address}
                   area={item.area}
+                  city={item.city.name}
                   bedrooms={item.bedrooms}
                   zipCode={item.zip_code}
                   image={item.image}
                   isRental={item.is_rental}
-                  onClick={() => navigate(`/listing/${item.id}`)}
+                  onClick={() => {
+                    navigate(`/listing/${item.id}`);
+                    window.scrollTo(0, 0);
+                  }}
                 />
               </Carousel.Slide>
             ))}

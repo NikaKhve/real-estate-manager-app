@@ -5,6 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
 
+import useGetAllRegions from "@/hooks/useGetAllRegions";
 import { createNewAgent } from "@/services/realEstatesService";
 import { useAddNewAgentSchema } from "@/schemas/useAddNewAgentSchema";
 import useRealEstates from "@/hooks/useRealEstates";
@@ -22,12 +23,15 @@ const savedValues = JSON.parse(localStorage.getItem("addNewAgentData")) || {
 };
 
 const ListingPage = () => {
+  const [filteredEstates, setFilteredEstates] = useState([]);
+  const [filters, setFilters] = useState({});
   const [file, setFile] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
 
   const navigate = useNavigate();
 
   const { realEstates, loading, error } = useRealEstates();
+  const { regions, loading: regionsLoading } = useGetAllRegions();
 
   const form = useForm({
     validate: zodResolver(useAddNewAgentSchema),
@@ -54,6 +58,52 @@ const ListingPage = () => {
     navigate(`${id}`);
   };
 
+  const filterListings = (filters) => {
+    let filtered = [...realEstates];
+
+    if (filters.region?.length) {
+      filtered = filtered.filter((item) =>
+        filters.region.includes(String(item.city.region_id))
+      );
+    }
+
+    if (filters.price) {
+      const { min, max } = filters.price;
+      if (min != null) {
+        filtered = filtered.filter((item) => item.price >= min);
+      }
+      if (max != null) {
+        filtered = filtered.filter((item) => item.price <= max);
+      }
+    }
+
+    if (filters.area) {
+      const { min, max } = filters.area;
+      if (min != null) {
+        filtered = filtered.filter((item) => item.area >= min);
+      }
+      if (max != null) {
+        filtered = filtered.filter((item) => item.area <= max);
+      }
+    }
+
+    if (filters.bedrooms?.length) {
+      filtered = filtered.filter((item) =>
+        filters.bedrooms.includes(String(item.bedrooms))
+      );
+    }
+
+    setFilteredEstates(filtered);
+  };
+
+  useEffect(() => {
+    setFilteredEstates(realEstates);
+  }, [realEstates]);
+
+  useEffect(() => {
+    filterListings(filters);
+  }, [filters]);
+
   useEffect(() => {
     const formData = { ...form.values };
     if (file) {
@@ -79,7 +129,11 @@ const ListingPage = () => {
         form={form}
         handleSubmit={(value) => handleOnSubmitAddNewAgent(value)}
       />
-      <HeaderFilters onClick={open} />
+      <HeaderFilters
+        onClick={open}
+        regions={regions}
+        onFilterChange={setFilters} // Pass setFilters to update the state in ListingPage
+      />
       <section className={classes.listingWrapper}>
         {loading ? (
           <Loader
@@ -93,7 +147,7 @@ const ListingPage = () => {
             size="xl"
           />
         ) : (
-          realEstates.map((item) => (
+          filteredEstates.map((item) => (
             <ListingCard
               onClick={() => handleOnClick(item.id)}
               key={item.id}

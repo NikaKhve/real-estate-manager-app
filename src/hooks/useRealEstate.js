@@ -20,7 +20,7 @@ const useRealEstate = (id) => {
     };
 
     fetchRealEstate(id);
-  }, []);
+  }, [id]);
 
   return { realEstate, loading, error };
 };

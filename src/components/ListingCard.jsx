@@ -26,7 +26,7 @@ const ListingCard = ({
         <img className={classes.image} height="307" src={image} />
       </section>
       <section className={classes.description}>
-        <p>{price} L</p>
+        <p>{price} ₾</p>
         <p>
           <PinIcon />
           {city}, {address}

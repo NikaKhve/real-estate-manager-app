@@ -3,11 +3,12 @@
 .container {
   @include default-app-padding;
   display: grid;
-  grid-template-rows: auto 1fr auto 1fr;
-  height: 100%;
+  grid-template-rows: auto 1fr auto;
+  // height: 100%;
   width: 100%;
   gap: 2rem;
   margin-top: 2rem;
+  padding-bottom: 2rem;
 }
 
 .description {
@@ -82,12 +83,10 @@
   border-radius: 12px;
 }
 
-.similarLocations {
-  > :first-child {
-    color: #021526;
-    font-size: 30px;
-    font-weight: 600;
-  }
+.similarLocationsText {
+  color: #021526;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 .modalInnerContainer {
