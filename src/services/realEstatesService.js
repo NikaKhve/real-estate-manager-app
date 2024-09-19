@@ -27,7 +27,7 @@ export const getAllAgents = async () => {
 
 export const createNewListing = async (payload) => {
   const formData = new FormData();
-  console.log(payload, "PAYLOAD");
+
   Object.keys(payload).forEach((key) => {
     let value = payload[key];
 
@@ -58,4 +58,35 @@ export const createNewListing = async (payload) => {
 export const deleteListing = async (id) => {
   const { data } = await axiosInstance.delete(`real-estates/${id}`);
   return data;
+};
+
+export const createNewAgent = async (payload) => {
+  const formData = new FormData();
+  console.log(payload, "PAYLOAD");
+
+  Object.keys(payload).forEach((key) => {
+    let value = payload[key];
+
+    // if (key === "region_id" || key === "city_id" || key === "agent_id") {
+    //   value = value ? parseInt(value, 10) : "";
+    // }
+
+    if (key === "avatar" && value instanceof File) {
+      formData.append(key, value);
+    } else if (value !== null && value !== "") {
+      formData.append(key, value);
+    }
+  });
+
+  try {
+    const { data } = await axiosInstance.post("/agents", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return data;
+  } catch (error) {
+    console.error("Error creating new listing:", error.response?.data || error);
+    throw error;
+  }
 };

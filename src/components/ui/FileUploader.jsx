@@ -6,7 +6,13 @@ import { Image } from "@mantine/core";
 import PlusIcon from "@/components/icons/PlusIcon";
 import classes from "./FileUploader.module.scss";
 
-const FileUploader = ({ selectedFile, setFile, form, errorMessage }) => {
+const FileUploader = ({
+  selectedFile,
+  setFile,
+  form,
+  errorMessage,
+  fileKey = "image",
+}) => {
   const openRef = useRef();
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -29,7 +35,7 @@ const FileUploader = ({ selectedFile, setFile, form, errorMessage }) => {
         openRef={openRef}
         onDrop={(files) => {
           const file = files[0];
-          form.setFieldValue("image", file);
+          form.setFieldValue(fileKey, file);
           setFile(file);
         }}
         accept={IMAGE_MIME_TYPE}
@@ -58,6 +64,7 @@ FileUploader.propTypes = {
     setFieldValue: PropTypes.func.isRequired,
   }).isRequired,
   errorMessage: PropTypes.string,
+  fileKey: PropTypes.string,
 };
 
 export default FileUploader;

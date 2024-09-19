@@ -1,0 +1,35 @@
+.modalContainer {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 3rem;
+
+  > :first-child {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    color: #021526;
+    font-weight: 600;
+  }
+
+  > :last-child {
+    // padding-bottom: 2rem;
+  }
+}
+
+.formWrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.fileUploaderWrapper {
+  grid-column: 1 / -1;
+}
+
+.buttonsWrapper {
+  grid-column: 1 /-1;
+  display: flex;
+  justify-content: end;
+  gap: 1rem;
+}

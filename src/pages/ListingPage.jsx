@@ -1,44 +1,84 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader, Modal } from "@mantine/core";
+import { Loader } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { zodResolver } from "mantine-form-zod-resolver";
+import { useForm } from "@mantine/form";
 
+import { createNewAgent } from "@/services/realEstatesService";
+import { useAddNewAgentSchema } from "@/schemas/useAddNewAgentSchema";
 import useRealEstates from "@/hooks/useRealEstates";
 import HeaderFilters from "@/components/HeaderFilters";
 import ListingCard from "@/components/ListingCard";
+import AddNewAgentModal from "@/components/modals/AddNewAgentModal";
 import classes from "./ListingPage.module.scss";
 
+const savedValues = JSON.parse(localStorage.getItem("addNewAgentData")) || {
+  name: "",
+  surname: "",
+  email: "",
+  phone: "",
+  avatar: "",
+};
+
 const ListingPage = () => {
+  const [file, setFile] = useState(null);
   const [opened, { open, close }] = useDisclosure(false);
 
   const navigate = useNavigate();
 
   const { realEstates, loading, error } = useRealEstates();
 
+  const form = useForm({
+    validate: zodResolver(useAddNewAgentSchema),
+    initialValues: savedValues,
+  });
+
+  const handleOnSubmitAddNewAgent = async (values) => {
+    await createNewAgent(values);
+    localStorage.removeItem("addNewAgentData");
+    resetForm();
+    close();
+  };
+
+  const resetForm = () => {
+    form.values.name = "";
+    form.values.surname = "";
+    form.values.email = "";
+    form.values.phone = "";
+    form.values.avatar = "";
+    setFile(null);
+  };
+
   const handleOnClick = (id) => {
     navigate(`${id}`);
   };
 
   useEffect(() => {
-    console.log(realEstates, "ESTATES");
-  }, [realEstates]);
+    const formData = { ...form.values };
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        formData.avatar = reader.result;
+        localStorage.setItem("addNewAgentData", JSON.stringify(formData));
+      };
+      reader.readAsDataURL(file);
+    } else {
+      localStorage.setItem("addNewAgentData", JSON.stringify(formData));
+    }
+  }, [form.values, file]);
 
   return (
     <div className={classes.container}>
-      <Modal
-        centered
-        size="xl"
+      <AddNewAgentModal
+        file={file}
+        setFile={setFile}
+        handleOnCloseModalClick={close}
         opened={opened}
-        onClose={close}
-        overlayProps={{
-          backgroundOpacity: 0.55,
-          blur: 3,
-        }}
-      >
-        <div className={classes.modalContainer}>
-          <p>adas</p>
-        </div>
-      </Modal>
+        close={close}
+        form={form}
+        handleSubmit={(value) => handleOnSubmitAddNewAgent(value)}
+      />
       <HeaderFilters onClick={open} />
       <section className={classes.listingWrapper}>
         {loading ? (

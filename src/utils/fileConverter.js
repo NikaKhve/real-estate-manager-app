@@ -1,4 +1,7 @@
-export const getFileFromLocalStorage = (storageKey = "listingForm") => {
+export const getFileFromLocalStorage = (
+  storageKey = "listingForm",
+  imagePath = "image"
+) => {
   const storedData = localStorage.getItem(storageKey);
 
   if (!storedData) {
@@ -8,8 +11,8 @@ export const getFileFromLocalStorage = (storageKey = "listingForm") => {
 
   const parsedData = JSON.parse(storedData);
 
-  if (typeof parsedData.image === "string") {
-    const base64 = parsedData.image;
+  if (typeof parsedData[imagePath] === "string") {
+    const base64 = parsedData[imagePath];
     const base64Parts = base64.split(",");
 
     if (base64Parts.length === 2) {
