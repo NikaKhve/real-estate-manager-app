@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { Image } from "@mantine/core";
@@ -8,20 +8,16 @@ import classes from "./FileUploader.module.scss";
 
 const FileUploader = ({ selectedFile, setFile, form, errorMessage }) => {
   const openRef = useRef();
+  const [imageUrl, setImageUrl] = useState(null);
 
-  const preview = () => {
-    if (!selectedFile) return null;
+  useEffect(() => {
+    if (selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setImageUrl(url);
 
-    const imageUrl = URL.createObjectURL(selectedFile);
-    return (
-      <Image
-        key={imageUrl}
-        src={imageUrl}
-        alt="Preview"
-        onLoad={() => URL.revokeObjectURL(imageUrl)}
-      />
-    );
-  };
+      return () => URL.revokeObjectURL(url);
+    }
+  }, [selectedFile]);
 
   return (
     <div className={classes.container}>
@@ -32,9 +28,9 @@ const FileUploader = ({ selectedFile, setFile, form, errorMessage }) => {
         mt="xs"
         openRef={openRef}
         onDrop={(files) => {
-          const selectedFile = files[0];
-          form.setFieldValue("image", selectedFile);
-          setFile(selectedFile);
+          const file = files[0];
+          form.setFieldValue("image", file);
+          setFile(file);
         }}
         accept={IMAGE_MIME_TYPE}
         className={classes.root}
@@ -43,7 +39,13 @@ const FileUploader = ({ selectedFile, setFile, form, errorMessage }) => {
       </Dropzone>
       {errorMessage && <p className={classes.errorMessage}>{errorMessage}</p>}
       <div className={classes.uploadedImageWrapper}>
-        {selectedFile && preview()}
+        {imageUrl && (
+          <Image
+            src={imageUrl}
+            alt="Preview"
+            onLoad={() => URL.revokeObjectURL(imageUrl)}
+          />
+        )}
       </div>
     </div>
   );

@@ -63,6 +63,11 @@ const AddNewListing = () => {
     initialValues: savedValues,
   });
 
+  const handleOnCancel = () => {
+    localStorage.removeItem("listingForm");
+    navigate("/listing");
+  };
+
   const handleSubmit = async (values) => {
     form.validate();
     await createNewListing(values);
@@ -205,7 +210,7 @@ const AddNewListing = () => {
         </div>
         <div className={classes.buttonsWrapper}>
           <BaseButton
-            onClick={() => navigate("/listing")}
+            onClick={() => handleOnCancel()}
             type="button"
             backgroundColor="#fffff"
             label="გაუქმება"
