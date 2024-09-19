@@ -24,6 +24,8 @@ import classes from "./AddNewListing.module.scss";
 const AddNewListing = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
+  const [filteredCities, setFilteredCities] = useState([]);
+  const [isCityDisabled, setIsCityDisabled] = useState(true);
 
   const { regions } = useGetAllRegions();
   const { cities } = useGetAllCities();
@@ -32,11 +34,6 @@ const AddNewListing = () => {
   const regionOptions = regions?.map((region) => ({
     value: String(region.id),
     label: region.name,
-  }));
-
-  const citiesOptions = cities?.map((city) => ({
-    value: String(city.id),
-    label: city.name,
   }));
 
   const agentsOptions = agents?.map((agent) => ({
@@ -62,6 +59,24 @@ const AddNewListing = () => {
     validate: zodResolver(useAddNewListingSchema),
     initialValues: savedValues,
   });
+
+  useEffect(() => {
+    if (form.values.region_id) {
+      const filtered = cities.filter(
+        (city) => String(city.region_id) === form.values.region_id
+      );
+      setFilteredCities(
+        filtered.map((city) => ({
+          value: String(city.id),
+          label: city.name,
+        }))
+      );
+      setIsCityDisabled(false);
+    } else {
+      setFilteredCities([]);
+      setIsCityDisabled(true);
+    }
+  }, [form.values.region_id, cities]);
 
   const handleOnCancel = () => {
     localStorage.removeItem("listingForm");
@@ -155,7 +170,8 @@ const AddNewListing = () => {
             />
             <Select
               label="ქალაქი*"
-              data={citiesOptions}
+              data={filteredCities}
+              disabled={isCityDisabled}
               {...form.getInputProps("city_id")}
             />
           </section>

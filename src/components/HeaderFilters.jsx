@@ -1,9 +1,10 @@
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import BaseButton from "./ui/BaseButton";
 import classes from "./HeaderFilters.module.scss";
 
-const HeaderFilters = () => {
+const HeaderFilters = ({ onClick }) => {
   const navigate = useNavigate();
 
   const handleOnAddNewListing = () => {
@@ -21,6 +22,7 @@ const HeaderFilters = () => {
           backgroundColor="#F93B1D"
         />
         <BaseButton
+          onClick={() => onClick()}
           label="აგენტის დამატება"
           textColor="#F93B1D"
           backgroundColor="#FFFFFF"
@@ -29,6 +31,10 @@ const HeaderFilters = () => {
       <section>BOXES</section>
     </div>
   );
+};
+
+HeaderFilters.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
 
 export default HeaderFilters;

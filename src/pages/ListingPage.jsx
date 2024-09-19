@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader } from "@mantine/core";
+import { Loader, Modal } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 
 import useRealEstates from "@/hooks/useRealEstates";
 import HeaderFilters from "@/components/HeaderFilters";
@@ -8,6 +9,8 @@ import ListingCard from "@/components/ListingCard";
 import classes from "./ListingPage.module.scss";
 
 const ListingPage = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+
   const navigate = useNavigate();
 
   const { realEstates, loading, error } = useRealEstates();
@@ -22,7 +25,21 @@ const ListingPage = () => {
 
   return (
     <div className={classes.container}>
-      <HeaderFilters />
+      <Modal
+        centered
+        size="xl"
+        opened={opened}
+        onClose={close}
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+      >
+        <div className={classes.modalContainer}>
+          <p>adas</p>
+        </div>
+      </Modal>
+      <HeaderFilters onClick={open} />
       <section className={classes.listingWrapper}>
         {loading ? (
           <Loader
