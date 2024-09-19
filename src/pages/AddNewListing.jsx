@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Radio,
@@ -7,15 +7,13 @@ import {
   NumberInput,
   Select,
   Textarea,
-  Image,
 } from "@mantine/core";
 import { zodResolver } from "mantine-form-zod-resolver";
 import { useForm } from "@mantine/form";
-import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
+import FileUploader from "@/components/ui/FileUploader";
 
 import { useAddNewListingSchema } from "@/schemas/useAddNewListingSchema";
 import BaseButton from "@/components/ui/BaseButton";
-import PlusIcon from "@/components/icons/PlusIcon";
 import useGetAllAgents from "@/hooks/useGetAllAgents";
 import useGetAllRegions from "@/hooks/useGetAllRegions";
 import { createNewListing } from "@/services/realEstatesService";
@@ -24,22 +22,7 @@ import classes from "./AddNewListing.module.scss";
 
 const AddNewListing = () => {
   const navigate = useNavigate();
-  const openRef = useRef();
   const [file, setFile] = useState(null);
-
-  const preview = () => {
-    if (!file) return null;
-
-    const imageUrl = URL.createObjectURL(file);
-    return (
-      <Image
-        key={imageUrl}
-        src={imageUrl}
-        alt="Preview"
-        onLoad={() => URL.revokeObjectURL(imageUrl)}
-      />
-    );
-  };
 
   const { regions } = useGetAllRegions();
   const { cities } = useGetAllCities();
@@ -240,28 +223,12 @@ const AddNewListing = () => {
             {...form.getInputProps("description")}
             key={form.key("description")}
           />
-          <p className={`${classes.uploadPhotoText} ${classes.fileInputText}`}>
-            ატვირთეთ ფოტო *
-          </p>
-          <Dropzone
-            mt="xs"
-            openRef={openRef}
-            onDrop={(files) => {
-              const selectedFile = files[0];
-              setFile(selectedFile);
-              form.setFieldValue("image", selectedFile);
-            }}
-            accept={IMAGE_MIME_TYPE}
-            className={classes.root}
-          >
-            <PlusIcon />
-          </Dropzone>
-          {form.errors.image && (
-            <p className={classes.errorMessage}>{form.errors.image}</p>
-          )}
-          <div className={classes.uploadedImageWrapper}>
-            {file && preview()}
-          </div>
+          <FileUploader
+            setFile={setFile}
+            selectedFile={file}
+            form={form}
+            errorMessage={form.errors.image}
+          />
         </div>
         <div>
           <p className={classes.inputGroupDescription}>აგენტი</p>

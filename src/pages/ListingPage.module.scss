@@ -2,9 +2,9 @@
 
 .container {
   @include default-app-padding;
-
   height: 100%;
   margin-top: 4rem;
+  padding-bottom: 4rem;
   display: grid;
   grid-template-rows: auto 1fr;
   gap: 2rem;

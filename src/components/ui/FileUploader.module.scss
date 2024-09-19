@@ -1,0 +1,26 @@
+.container {
+  .root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 120px;
+    border: 1.9px dashed #2d3648;
+    border-radius: 8px;
+  }
+}
+
+.uploadPhotoText {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.fileInputText {
+  margin-top: 2rem;
+}
+
+.uploadedImageWrapper {
+  display: flex;
+  margin-top: 1rem;
+  border-radius: 12px;
+  // overflow: hidden;
+}
