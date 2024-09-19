@@ -13,6 +13,7 @@ import { useForm } from "@mantine/form";
 import FileUploader from "@/components/ui/FileUploader";
 
 import { useAddNewListingSchema } from "@/schemas/useAddNewListingSchema";
+import { getFileFromLocalStorage } from "@/utils/fileConverter";
 import BaseButton from "@/components/ui/BaseButton";
 import useGetAllAgents from "@/hooks/useGetAllAgents";
 import useGetAllRegions from "@/hooks/useGetAllRegions";
@@ -62,52 +63,19 @@ const AddNewListing = () => {
     initialValues: savedValues,
   });
 
-  function getPhoto() {
-    const storedData = localStorage.getItem("listingForm");
-
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-
-      if (typeof parsedData.image === "string") {
-        const base64 = parsedData.image;
-        const base64Parts = base64.split(",");
-
-        if (base64Parts.length === 2) {
-          const mimeType = base64Parts[0].match(/data:(.*?);base64/)[1];
-          const fileContent = base64Parts[1];
-
-          const fileExtension = mimeType.split("/")[1];
-
-          const fileName = `file_name.${fileExtension}`;
-
-          const binary = atob(fileContent);
-          const arrayBuffer = new ArrayBuffer(binary.length);
-          const uint8Array = new Uint8Array(arrayBuffer);
-
-          for (let i = 0; i < binary.length; i++) {
-            uint8Array[i] = binary.charCodeAt(i);
-          }
-
-          const file = new File([arrayBuffer], fileName, {
-            type: mimeType,
-          });
-
-          form.values.image = file;
-          setFile(file);
-          return file;
-        } else {
-          console.error("Invalid base64 format");
-        }
-      } else {
-        console.error("Image data is not a base64 string");
-      }
-    } else {
-      console.error("No data found in localStorage");
-    }
-  }
+  const handleSubmit = async (values) => {
+    form.validate();
+    await createNewListing(values);
+    localStorage.removeItem("listingForm");
+    navigate("/listing");
+  };
 
   useEffect(() => {
-    getPhoto();
+    const image = getFileFromLocalStorage();
+    if (image) {
+      setFile(image);
+      form.setFieldValue("image", image);
+    }
   }, []);
 
   useEffect(() => {
@@ -124,13 +92,6 @@ const AddNewListing = () => {
       localStorage.setItem("listingForm", JSON.stringify(formData));
     }
   }, [form.values, file]);
-
-  const handleSubmit = async (values) => {
-    form.validate();
-    await createNewListing(values);
-    localStorage.removeItem("listingForm");
-    navigate("/listing");
-  };
 
   return (
     <div className={classes.container}>
