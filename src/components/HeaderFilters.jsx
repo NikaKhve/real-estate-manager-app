@@ -8,6 +8,13 @@ import ChevronIcon from "./icons/ChevronIcon";
 import BaseButton from "./ui/BaseButton";
 import classes from "./HeaderFilters.module.scss";
 
+const initialFilters = {
+  region: [],
+  price: { min: null, max: null },
+  area: { min: null, max: null },
+  bedrooms: null,
+};
+
 const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
   const [selectedFilters, setSelectedFilters] = useState(() => {
     const savedFilters = localStorage.getItem("selectedFilters");
@@ -159,6 +166,22 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
         [type]: selectedFilters[type].filter((item) => item !== value),
       });
     }
+  };
+
+  const handleClearAllFilters = () => {
+    setSelectedFilters(initialFilters);
+    setTempFilters(initialFilters);
+    localStorage.removeItem("selectedFilters");
+    onFilterChange(initialFilters);
+  };
+
+  const hasActiveFilters = () => {
+    return (
+      selectedFilters.region.length > 0 ||
+      (selectedFilters.price.min && selectedFilters.price.max) ||
+      (selectedFilters.area.min && selectedFilters.area.max) ||
+      selectedFilters.bedrooms
+    );
   };
 
   const renderDropdown = (filterType) => {
@@ -387,6 +410,11 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
             <p>{selectedFilters.bedrooms}</p>
             <CrossIcon onClick={() => handleChipRemove("bedrooms")} />
           </div>
+        )}
+        {hasActiveFilters() && (
+          <p onClick={handleClearAllFilters} className={classes.clearAllButton}>
+            გასუფთავება
+          </p>
         )}
       </section>
     </div>
