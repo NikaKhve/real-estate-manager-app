@@ -13,7 +13,7 @@ import "@mantine/dropzone/styles.css";
 function App() {
   return (
     <MantineProvider>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <BrowserRouter>
         <Header />
         <Routes>
           <Route path="/" element={<Navigate to="/listing" replace />} />
