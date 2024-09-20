@@ -298,7 +298,6 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
             <p className={classes.dropdownHeaderText}>საძინებლების რაოდენობა</p>
             <NumberInput
               hideControls
-              placeholder="რაოდენობა"
               value={tempFilters.bedrooms}
               onChange={(value) => handleBedroomsChange(value)}
             />
