@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { Checkbox, NumberInput } from "@mantine/core";
@@ -9,19 +9,26 @@ import BaseButton from "./ui/BaseButton";
 import classes from "./HeaderFilters.module.scss";
 
 const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
-  const [selectedFilters, setSelectedFilters] = useState({
-    region: [],
-    price: { min: null, max: null },
-    area: { min: null, max: null },
-    bedrooms: [],
+  const [selectedFilters, setSelectedFilters] = useState(() => {
+    const savedFilters = localStorage.getItem("selectedFilters");
+    return savedFilters
+      ? JSON.parse(savedFilters)
+      : {
+          region: [],
+          price: { min: null, max: null },
+          area: { min: null, max: null },
+          bedrooms: null,
+        };
   });
 
-  const [tempFilters, setTempFilters] = useState({
-    region: [],
-    price: { min: null, max: null },
-    area: { min: null, max: null },
-    bedrooms: [],
-  });
+  const [tempFilters, setTempFilters] = useState({ ...selectedFilters });
+
+  useEffect(() => {
+    localStorage.setItem("selectedFilters", JSON.stringify(selectedFilters));
+    setTimeout(() => {
+      onFilterChange(selectedFilters);
+    }, 300);
+  }, [selectedFilters, onFilterChange]);
 
   const [activeFilter, setActiveFilter] = useState(null);
   const [priceError, setPriceError] = useState(null);
@@ -64,6 +71,13 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
 
   const handleAreaChange = (field, value) => {
     handleRangeChange("area", field, value);
+  };
+
+  const handleBedroomsChange = (value) => {
+    setTempFilters((prev) => ({
+      ...prev,
+      bedrooms: value,
+    }));
   };
 
   const handlePriceChange = (field, value) => {
@@ -117,6 +131,19 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
       onFilterChange({
         ...selectedFilters,
         [type]: { min: null, max: null },
+      });
+    } else if (type === "bedrooms") {
+      setSelectedFilters((prev) => ({
+        ...prev,
+        bedrooms: null,
+      }));
+      setTempFilters((prev) => ({
+        ...prev,
+        bedrooms: null,
+      }));
+      onFilterChange({
+        ...selectedFilters,
+        bedrooms: null,
       });
     } else {
       setSelectedFilters((prev) => ({
@@ -246,9 +273,12 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
         {filterType === "bedrooms" && (
           <div className={classes.bedroomsContainer}>
             <p className={classes.dropdownHeaderText}>საძინებლების რაოდენობა</p>
-            <div className={classes.ss}>
-              <NumberInput max={10} hideControls value={tempFilters.area.max} />
-            </div>
+            <NumberInput
+              hideControls
+              placeholder="რაოდენობა"
+              value={tempFilters.bedrooms}
+              onChange={(value) => handleBedroomsChange(value)}
+            />
           </div>
         )}
         <div className={classes.submitButtonWrapper}>
@@ -327,48 +357,36 @@ const HeaderFilters = ({ onClick, regions, onFilterChange }) => {
       </div>
 
       <section className={classes.chipContainer}>
-        {Object.entries(selectedFilters).map(([filterType, values]) =>
-          Array.isArray(values)
-            ? values.map((value) => {
-                if (filterType === "region") {
-                  const regionLabel = regionOptions.find(
-                    (region) => region.value === value
-                  )?.label;
-                  return (
-                    <div
-                      className={classes.chip}
-                      key={`${filterType}-${value}`}
-                    >
-                      <p>{regionLabel}</p>
-                      <CrossIcon
-                        onClick={() => handleChipRemove(filterType, value)}
-                      />
-                    </div>
-                  );
-                }
+        {selectedFilters.region.map((region) => (
+          <div key={region} className={classes.chip}>
+            <p>{regions.find((r) => r.id === +region)?.name}</p>
+            <CrossIcon onClick={() => handleChipRemove("region", region)} />
+          </div>
+        ))}
 
-                return (
-                  <div className={classes.chip} key={`${filterType}-${value}`}>
-                    <p>{value}</p>
-                    <CrossIcon
-                      onClick={() => handleChipRemove(filterType, value)}
-                    />
-                  </div>
-                );
-              })
-            : values.min &&
-              values.max && (
-                <div className={classes.chip} key={`${filterType}-range`}>
-                  <p>
-                    {filterType === "price"
-                      ? `${values.min}₾ - ${values.max}₾`
-                      : `${values.min}მ² - ${values.max}მ²`}
-                  </p>
-                  <CrossIcon
-                    onClick={() => handleChipRemove(filterType, filterType)}
-                  />
-                </div>
-              )
+        {selectedFilters.price.min && selectedFilters.price.max && (
+          <div className={classes.chip}>
+            <p>
+              {selectedFilters.price.min} - {selectedFilters.price.max} ლარი
+            </p>
+            <CrossIcon onClick={() => handleChipRemove("price")} />
+          </div>
+        )}
+
+        {selectedFilters.area.min && selectedFilters.area.max && (
+          <div className={classes.chip}>
+            <p>
+              {selectedFilters.area.min} - {selectedFilters.area.max} მ²
+            </p>
+            <CrossIcon onClick={() => handleChipRemove("area")} />
+          </div>
+        )}
+
+        {selectedFilters.bedrooms && (
+          <div className={classes.chip}>
+            <p>{selectedFilters.bedrooms}</p>
+            <CrossIcon onClick={() => handleChipRemove("bedrooms")} />
+          </div>
         )}
       </section>
     </div>

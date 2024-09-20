@@ -59,39 +59,57 @@ const ListingPage = () => {
   };
 
   const filterListings = (filters) => {
-    let filtered = [...realEstates];
+    if (Object.keys(filters).length === 0) return;
+    let filtered = [];
 
-    if (filters.region?.length) {
-      filtered = filtered.filter((item) =>
-        filters.region.includes(String(item.city.region_id))
-      );
+    let matchesRegion = filters.region?.length < 1;
+    let matchesPrice = filters.price.max === null && filters.price.min === null;
+    let matchesArea = filters.area.max === null && filters.area.min === null;
+    let matchesBedrooms = filters.bedrooms == null;
+
+    if (matchesRegion && matchesPrice && matchesArea && matchesBedrooms) {
+      setFilteredEstates(realEstates);
+      return;
     }
 
-    if (filters.price) {
-      const { min, max } = filters.price;
-      if (min != null) {
-        filtered = filtered.filter((item) => item.price >= min);
-      }
-      if (max != null) {
-        filtered = filtered.filter((item) => item.price <= max);
-      }
-    }
+    realEstates.forEach((item) => {
+      let matchesRegion = false;
+      let matchesPrice = false;
+      let matchesArea = false;
+      let matchesBedrooms = false;
 
-    if (filters.area) {
-      const { min, max } = filters.area;
-      if (min != null) {
-        filtered = filtered.filter((item) => item.area >= min);
+      if (filters.region?.length) {
+        matchesRegion = filters.region.includes(String(item.city.region_id));
       }
-      if (max != null) {
-        filtered = filtered.filter((item) => item.area <= max);
-      }
-    }
 
-    if (filters.bedrooms?.length) {
-      filtered = filtered.filter((item) =>
-        filters.bedrooms.includes(String(item.bedrooms))
-      );
-    }
+      if (filters.price) {
+        const { min, max } = filters.price;
+        if (min != null) {
+          matchesPrice = item.price >= min;
+        }
+        if (max != null) {
+          matchesPrice = matchesPrice && item.price <= max;
+        }
+      }
+
+      if (filters.area) {
+        const { min, max } = filters.area;
+        if (min != null) {
+          matchesArea = item.area >= min;
+        }
+        if (max != null) {
+          matchesArea = matchesArea && item.area <= max;
+        }
+      }
+
+      if (filters.bedrooms != null) {
+        matchesBedrooms = item.bedrooms === filters.bedrooms;
+      }
+
+      if (matchesRegion || matchesPrice || matchesArea || matchesBedrooms) {
+        filtered.push(item);
+      }
+    });
 
     setFilteredEstates(filtered);
   };
@@ -132,7 +150,8 @@ const ListingPage = () => {
       <HeaderFilters
         onClick={open}
         regions={regions}
-        onFilterChange={setFilters} // Pass setFilters to update the state in ListingPage
+        listingLoadingState={loading}
+        onFilterChange={setFilters}
       />
       <section className={classes.listingWrapper}>
         {loading ? (
