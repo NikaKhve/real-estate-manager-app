@@ -47,6 +47,7 @@ const FileUploader = ({
       <div className={classes.uploadedImageWrapper}>
         {imageUrl && (
           <Image
+            height="300px"
             src={imageUrl}
             alt="Preview"
             onLoad={() => URL.revokeObjectURL(imageUrl)}

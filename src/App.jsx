@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { MantineProvider } from "@mantine/core";
 
 import ListingPage from "./pages/ListingPage";
@@ -16,9 +16,10 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
-          <Route path="/listing" element={<ListingPage />}></Route>
-          <Route path="/listing/:id" element={<ListingItem />}></Route>
-          <Route path="/add-new-listing" element={<AddNewListing />}></Route>
+          <Route path="/" element={<Navigate to="/listing" replace />} />
+          <Route path="/listing" element={<ListingPage />} />
+          <Route path="/listing/:id" element={<ListingItem />} />
+          <Route path="/add-new-listing" element={<AddNewListing />} />
         </Routes>
       </BrowserRouter>
     </MantineProvider>
